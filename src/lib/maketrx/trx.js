@@ -178,34 +178,6 @@ export async function createDigiTRX(refId, produk_sku, customer_no, m, maxPrice 
     }
 }
 
-export async function createDeposit(amount, bankName = "BRI", ownerName = DIGI_USERNAME) {
-    const sign = crypto
-        .createHash("md5")
-        .update(DIGI_USERNAME + DIGI_API_KEY + "deposit")
-        .digest("hex");
-
-    console.log(`[TRX] Request deposit → ${formatRupiah(amount)} via ${bankName}`);
-
-    try {
-        const res = await axios.post(`${DIGI_BASE_URL}deposit`, {
-            username: DIGI_USERNAME,
-            amount,
-            Bank: bankName,
-            owner_name: ownerName,
-            sign,
-        }, {
-            headers: { "Content-Type": "application/json" },
-        });
-
-        console.log("[TRX] Response deposit:", res.data);
-        return res.data;
-
-    } catch (error) {
-        console.error("[TRX] Error deposit:", error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-}
-
 export async function checkSaldo() {
     const sign = crypto
         .createHash("md5")
@@ -227,44 +199,6 @@ export async function checkSaldo() {
 
     } catch (error) {
         console.error("[TRX] Error cek saldo:", error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-}
-
-export async function createDeposit(amount, bankName, ownerName = DIGI_USERNAME) {
-    const bankPerorangan  = ["FLIP", "SHOPEEPAY"];
-    const bankPerusahaan  = ["BCA", "MANDIRI", "BRI", "BNI"];
-    const bankValid       = [...bankPerorangan, ...bankPerusahaan];
-
-    if (!bankValid.includes(bankName?.toUpperCase())) {
-        throw new Error(
-            `Bank tidak valid. Pilihan: ${bankValid.join(", ")}`
-        );
-    }
-
-    const sign = crypto
-        .createHash("md5")
-        .update(DIGI_USERNAME + DIGI_API_KEY + "deposit")
-        .digest("hex");
-
-    console.log(`[TRX] Request deposit → ${formatRupiah(amount)} via ${bankName}`);
-
-    try {
-        const res = await axios.post(`${DIGI_BASE_URL}deposit`, {
-            username:   DIGI_USERNAME,
-            amount:     amount,
-            Bank:       bankName.toUpperCase(),
-            owner_name: ownerName,
-            sign:       sign,
-        }, {
-            headers: { "Content-Type": "application/json" },
-        });
-
-        console.log("[TRX] Response deposit:", res.data);
-        return res.data;
-
-    } catch (error) {
-        console.error("[TRX] Error deposit:", error.response?.data || error.message);
         throw error.response?.data || error;
     }
 }
